@@ -31,17 +31,17 @@ def delete_command(key):
     with open(TEMP_FILE, 'w+') as temp_file:
         with open(CLIP_FILE, 'r') as clip_file:
             for command in clip_file.read().split('\n'):
+                if command.strip() == "":
+                    continue
                 key_val = command.split(':')
                 if key_val[0].strip() != key:
                     temp_file.write(command+"\n")
-
     try:
-        os.remove(CLIP_FILE)
+        os.rename(TEMP_FILE, CLIP_FILE)
     except Exception as ex:
         os.remove(TEMP_FILE)
         print('remove command failed.', ex)
         return
-    os.rename(TEMP_FILE, CLIP_FILE)
 
 
 if __name__ == '__main__':
