@@ -4,12 +4,12 @@ A command line tool, written in python, to save and retrieve your most used comm
 ## Installation
 
 ```
-git clone https://github.com/keshav11/clip
-cd clip
-python setup.py install
+$ git clone https://github.com/keshav11/clip
+$ cd clip
+$ python setup.py install
 ```
 
 ## Usage
 ```
-clip [-a key text] [-g key] [-d key] [-l]
+$ clip [-a key text] [-g key] [-d key] [-l]
 ```
