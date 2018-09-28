@@ -1,2 +1,3 @@
 # clip
-clip is a command line tool written in python save often used commands and retrieve them later. 
+A command line tool, written in python, to save and retrieve your most used commands and snippets from the command line.
+
