@@ -5,47 +5,53 @@ from pathlib import Path
 CLIP_FILE = os.path.join(Path.home(), '.clip')
 TEMP_FILE = '.TEMP_FILE'
 
-def add_command(key, command):
+
+def add_text(key, text):
     if os.path.exists(CLIP_FILE):
         open_mode = 'a'
     else:
         open_mode = 'w+'
     with open(CLIP_FILE, open_mode) as clip_file:
-        clip_file.write(key + ": " + command + "\n")
+        clip_file.write(key + ": " + text + "\n")
 
 
-def list_commands():
+def list_texts():
     with open(CLIP_FILE, 'r') as clip_file:
-        for command in clip_file.read().split('\n'):
-            print(command)
+        for text in clip_file.read().split('\n'):
+            print(text)
 
 
-def get_command(key):
+def get_text(key):
     with open(CLIP_FILE, 'r') as clip_file:
-        for command in clip_file.read().split('\n'):
-            key_val = command.split(':')
+        for text in clip_file.read().split('\n'):
+            key_val = text.split(':')
             if key_val[0].strip() == key:
-                print(key_val[1].strip())
+                print(key_val[1].strip(), end='')
 
-def delete_command(key):
+
+def delete_text(key):
+    exists = False
     with open(TEMP_FILE, 'w+') as temp_file:
         with open(CLIP_FILE, 'r') as clip_file:
-            for command in clip_file.read().split('\n'):
-                if command.strip() == "":
+            for text in clip_file.read().split('\n'):
+                if text.strip() == "":
                     continue
-                key_val = command.split(':')
+                key_val = text.split(':')
                 if key_val[0].strip() != key:
-                    temp_file.write(command+"\n")
+                    temp_file.write(text+"\n")
+                else:
+                    exists = True
+    if not exists:
+        print("key:", key, "was not found in the clip store")
     try:
         os.rename(TEMP_FILE, CLIP_FILE)
     except Exception as ex:
         os.remove(TEMP_FILE)
-        print('remove command failed.', ex)
-        return
+        print('remove text failed.', ex)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='clip commands')
+def main():
+    parser = argparse.ArgumentParser(description='clips and saves texts from the command line')
     parser.add_argument('-a', '--add', nargs=2)
     parser.add_argument('-g', '--get', nargs=1)
     parser.add_argument('-d', '--delete', nargs=1)
@@ -54,10 +60,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.add:
-        add_command(args.add[0], args.add[1])
+        key, value = args.add[0], args.add[1]
+        add_text(key, value)
     elif args.list:
-        list_commands()
+        list_texts()
     elif args.get:
-        get_command(args.get[0])
+        key = args.get[0]
+        get_text(key)
     elif args.delete:
-        delete_command(args.delete[0])
+        key = args.delete[0]
+        delete_text(key)
+    else:
+        parser.print_usage()
+
+
+if __name__ == '__main__':
+    main()
